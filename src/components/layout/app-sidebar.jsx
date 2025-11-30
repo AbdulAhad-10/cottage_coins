@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, Wallet, FolderTree, FilePieChart, Brain, Boxes, Mail, History, Settings, LogOut } from "lucide-react";
+import { BarChart3, Wallet, FolderTree, FilePieChart, Brain, Mail, History } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Sidebar,
@@ -27,7 +27,6 @@ const nav = [
   { separator: true },
   { title: "Email Reports", url: "/email-reports", icon: Mail },
   { title: "History", url: "/history", icon: History },
-  { separator: true },
 ];
 
 export function AppSidebar() {

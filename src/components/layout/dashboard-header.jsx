@@ -1,11 +1,12 @@
 "use client";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "../ui/button";
 import { User, Settings as SettingsIcon, LogOut as LogOutIcon } from "lucide-react";
 import Link from "next/link";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { authAPI } from "@/lib/api/auth";
 
 const titles = new Map([
   ["/dashboard", "Dashboard"],
@@ -17,7 +18,6 @@ const titles = new Map([
   ["/email-reports", "Email Reports"],
   ["/history", "History"],
   ["/settings", "Settings"],
-  ["/logout", "Logout"],
 ]);
 
 export function DashboardHeader() {
@@ -36,6 +36,13 @@ export function DashboardHeader() {
 }
 
 function AccountDropdownMenu() {
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await authAPI.logout();
+    router.push("/login");
+  };
+
   return (
     <div className="ml-auto">
       <DropdownMenu>
@@ -54,12 +61,10 @@ function AccountDropdownMenu() {
               Settings
             </DropdownMenuItem>
           </Link>
-          <Link href="/logout">
-            <DropdownMenuItem className="cursor-pointer">
-              <LogOutIcon className="mr-2 size-4" />
-              Logout
-            </DropdownMenuItem>
-          </Link>
+          <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
+            <LogOutIcon className="mr-2 size-4" />
+            Logout
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
