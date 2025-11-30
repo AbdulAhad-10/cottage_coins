@@ -24,7 +24,6 @@ const nav = [
   { title: "Categories", url: "/categories", icon: FolderTree },
   { title: "Reports", url: "/reports", icon: FilePieChart },
   { title: "AI Forecast", url: "/forecast", icon: Brain },
-  { title: "AI Inventory Insights", url: "/inventory-insights", icon: Boxes },
   { separator: true },
   { title: "Email Reports", url: "/email-reports", icon: Mail },
   { title: "History", url: "/history", icon: History },
