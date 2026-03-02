@@ -32,13 +32,8 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const data = await authAPI.login(formData);
-
-      // Store token in localStorage
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-
-      // Redirect to dashboard
+      await authAPI.login(formData);
+      // Token is set in HTTP-only cookie by the API
       router.push("/dashboard");
     } catch (err) {
       setError(err.message);
