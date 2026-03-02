@@ -1,6 +1,6 @@
 import apiClient from "@/lib/api";
 
-// Auth API functions
+// Auth API functions (cookie-only: token stored in HTTP-only cookie)
 export const authAPI = {
   signup: async (data) => {
     const response = await apiClient.post("/auth/signup", data);
@@ -17,22 +17,16 @@ export const authAPI = {
       await apiClient.post("/auth/logout");
     } catch (error) {
       console.error("Logout error:", error);
-    } finally {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
     }
   },
 
-  getUser: () => {
-    const user = localStorage.getItem("user");
-    return user ? JSON.parse(user) : null;
-  },
-
-  getToken: () => {
-    return localStorage.getItem("token");
-  },
-
-  isAuthenticated: () => {
-    return !!localStorage.getItem("token");
+  /** Fetch current user from server (reads auth from cookie) */
+  getCurrentUser: async () => {
+    try {
+      const response = await apiClient.get("/auth/me");
+      return response.data.user;
+    } catch {
+      return null;
+    }
   },
 };

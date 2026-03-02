@@ -34,13 +34,8 @@ export default function SignupPage() {
     setIsLoading(true);
 
     try {
-      const data = await authAPI.signup(formData);
-
-      // Store token in localStorage
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-
-      // Redirect to dashboard
+      await authAPI.signup(formData);
+      // Token is set in HTTP-only cookie by the API
       router.push("/dashboard");
     } catch (err) {
       setError(err.message);
