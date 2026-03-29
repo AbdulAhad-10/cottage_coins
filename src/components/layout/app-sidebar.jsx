@@ -1,7 +1,15 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, Wallet, FolderTree, FilePieChart, Brain, Mail, History } from "lucide-react";
+import {
+  BarChart3,
+  Wallet,
+  FolderTree,
+  FilePieChart,
+  Brain,
+  Mail,
+  History,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Sidebar,
@@ -20,8 +28,8 @@ import {
 const nav = [
   { title: "Dashboard", url: "/dashboard", icon: BarChart3 },
   { separator: true },
-  { title: "Transactions", url: "/transactions", icon: Wallet },
   { title: "Categories", url: "/categories", icon: FolderTree },
+  { title: "Transactions", url: "/transactions", icon: Wallet },
   { title: "Reports", url: "/reports", icon: FilePieChart },
   { title: "AI Forecast", url: "/forecast", icon: Brain },
   { separator: true },
@@ -67,7 +75,7 @@ export function AppSidebar() {
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                )
+                ),
               )}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -79,5 +87,3 @@ export function AppSidebar() {
 }
 
 export default AppSidebar;
-
-

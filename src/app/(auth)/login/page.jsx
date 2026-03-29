@@ -15,35 +15,51 @@ import {
 } from "@/components/ui/card";
 import { BarChart3 } from "lucide-react";
 import { authAPI } from "@/lib/api/auth";
+import { cn } from "@/lib/utils";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-  const [error, setError] = useState("");
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [touched, setTouched] = useState({});
+  const [apiError, setApiError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const errors = {
+    email: !formData.email.trim()
+      ? "Email is required"
+      : !EMAIL_REGEX.test(formData.email)
+      ? "Enter a valid email address"
+      : null,
+    password: !formData.password
+      ? "Password is required"
+      : formData.password.length < 6
+      ? "Password must be at least 6 characters"
+      : null,
+  };
+
+  const isFormValid = Object.values(errors).every((e) => e === null);
+
+  const touch = (field) => setTouched((prev) => ({ ...prev, [field]: true }));
+
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-    setError(""); // Clear error when user types
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setApiError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setIsLoading(true);
+    setTouched({ email: true, password: true });
+    if (!isFormValid) return;
 
+    setApiError("");
+    setIsLoading(true);
     try {
       await authAPI.login(formData);
-      // Token is set in HTTP-only cookie by the API
       router.push("/dashboard");
     } catch (err) {
-      setError(err.message);
+      setApiError(err.message);
     } finally {
       setIsLoading(false);
     }
@@ -68,76 +84,35 @@ export default function LoginPage() {
           <div className="space-y-4 pt-8">
             <div className="flex items-start gap-3">
               <div className="bg-sidebar-accent rounded-full p-2 mt-1">
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
               <div>
-                <h3 className="font-semibold text-lg">
-                  Track Every Transaction
-                </h3>
-                <p className="text-muted-foreground">
-                  Keep tabs on all your income and expenses in one place
-                </p>
+                <h3 className="font-semibold text-lg">Track Every Transaction</h3>
+                <p className="text-muted-foreground">Keep tabs on all your income and expenses in one place</p>
               </div>
             </div>
-
             <div className="flex items-start gap-3">
               <div className="bg-sidebar-accent rounded-full p-2 mt-1">
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
               <div>
                 <h3 className="font-semibold text-lg">Smart Categories</h3>
-                <p className="text-muted-foreground">
-                  Organize spending with intelligent categorization
-                </p>
+                <p className="text-muted-foreground">Organize spending with intelligent categorization</p>
               </div>
             </div>
-
             <div className="flex items-start gap-3">
               <div className="bg-sidebar-accent rounded-full p-2 mt-1">
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
               <div>
                 <h3 className="font-semibold text-lg">AI-Powered Insights</h3>
-                <p className="text-muted-foreground">
-                  Get forecasts and recommendations for better financial
-                  decisions
-                </p>
+                <p className="text-muted-foreground">Get forecasts and recommendations for better financial decisions</p>
               </div>
             </div>
           </div>
@@ -153,18 +128,16 @@ export default function LoginPage() {
               <span className="text-2xl font-bold">Cottage Coins</span>
             </div>
             <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
-            <CardDescription>
-              Enter your credentials to access your account
-            </CardDescription>
+            <CardDescription>Enter your credentials to access your account</CardDescription>
           </CardHeader>
           <CardContent>
-            {error && (
-              <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-                {error}
+            {apiError && (
+              <div className="mb-4 rounded-md border border-destructive/50 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                {apiError}
               </div>
             )}
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
+            <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+              <div className="space-y-1.5">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
@@ -173,14 +146,16 @@ export default function LoginPage() {
                   placeholder="john@example.com"
                   value={formData.email}
                   onChange={handleChange}
-                  required
+                  onBlur={() => touch("email")}
+                  className={cn(touched.email && errors.email && "border-destructive focus-visible:ring-destructive")}
                 />
+                {touched.email && errors.email && (
+                  <p className="text-xs text-destructive">{errors.email}</p>
+                )}
               </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
-                </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
                   name="password"
@@ -188,8 +163,12 @@ export default function LoginPage() {
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
-                  required
+                  onBlur={() => touch("password")}
+                  className={cn(touched.password && errors.password && "border-destructive focus-visible:ring-destructive")}
                 />
+                {touched.password && errors.password && (
+                  <p className="text-xs text-destructive">{errors.password}</p>
+                )}
               </div>
 
               <Button type="submit" className="w-full" disabled={isLoading}>
@@ -200,10 +179,7 @@ export default function LoginPage() {
           <CardFooter className="flex flex-col space-y-4">
             <div className="text-sm text-muted-foreground text-center">
               Don&apos;t have an account?{" "}
-              <Link
-                href="/signup"
-                className="text-primary hover:underline font-medium"
-              >
+              <Link href="/signup" className="text-primary hover:underline font-medium">
                 Sign up
               </Link>
             </div>

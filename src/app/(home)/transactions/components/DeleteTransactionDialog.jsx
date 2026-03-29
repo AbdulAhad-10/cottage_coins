@@ -16,6 +16,7 @@ export function DeleteTransactionDialog({
   open,
   onOpenChange,
   onConfirm,
+  isDeleting,
 }) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -31,9 +32,10 @@ export function DeleteTransactionDialog({
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
+            disabled={isDeleting}
             className="bg-destructive text-white hover:bg-destructive/90"
           >
-            Delete
+            {isDeleting ? "Deleting..." : "Delete"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -20,7 +21,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { MOCK_CATEGORIES } from "../data/mock-transactions";
 
 export function TransactionModal({
   open,
@@ -42,11 +42,51 @@ export function TransactionModal({
   onFormDescriptionChange,
   onSave,
   onCancel,
-  isFormValid,
+  isSaving,
+  categories,
 }) {
+  const [touched, setTouched] = useState({});
+
+  // Reset touched state when modal opens/closes
+  useEffect(() => {
+    if (!open) setTouched({});
+  }, [open]);
+
+  const touch = (field) => setTouched((prev) => ({ ...prev, [field]: true }));
+
+  const errors = {
+    name:
+      !formName.trim()
+        ? "Name is required"
+        : formName.trim().length < 2
+        ? "Name must be at least 2 characters"
+        : null,
+    amount:
+      formAmount === ""
+        ? "Amount is required"
+        : isNaN(parseFloat(formAmount))
+        ? "Amount must be a number"
+        : parseFloat(formAmount) <= 0
+        ? "Amount must be greater than 0"
+        : parseFloat(formAmount) > 100_000_000
+        ? "Amount is too large"
+        : null,
+    date: !formDate ? "Date is required" : null,
+    category: !formCategory ? "Please select a category" : null,
+  };
+
+  const isFormValid = Object.values(errors).every((e) => e === null);
+
+  const handleSave = () => {
+    // Touch all fields to reveal any hidden errors before submitting
+    setTouched({ name: true, amount: true, date: true, category: true });
+    if (!isFormValid) return;
+    onSave();
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {isEditing ? "Edit Transaction" : "Add Transaction"}
@@ -58,16 +98,24 @@ export function TransactionModal({
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <div className="space-y-2">
+          {/* Name */}
+          <div className="space-y-1.5">
             <Label htmlFor="form-name">Name</Label>
             <Input
               id="form-name"
               value={formName}
               onChange={(e) => onFormNameChange(e.target.value)}
+              onBlur={() => touch("name")}
               placeholder="e.g. Cumin Seed Sale"
+              className={cn(touched.name && errors.name && "border-destructive focus-visible:ring-destructive")}
             />
+            {touched.name && errors.name && (
+              <p className="text-xs text-destructive">{errors.name}</p>
+            )}
           </div>
-          <div className="space-y-2">
+
+          {/* Amount */}
+          <div className="space-y-1.5">
             <Label htmlFor="form-amount">Amount</Label>
             <Input
               id="form-amount"
@@ -76,19 +124,33 @@ export function TransactionModal({
               step="0.01"
               value={formAmount}
               onChange={(e) => onFormAmountChange(e.target.value)}
+              onBlur={() => touch("amount")}
               placeholder="0.00"
+              className={cn(touched.amount && errors.amount && "border-destructive focus-visible:ring-destructive")}
             />
+            {touched.amount && errors.amount && (
+              <p className="text-xs text-destructive">{errors.amount}</p>
+            )}
           </div>
-          <div className="space-y-2">
+
+          {/* Date */}
+          <div className="space-y-1.5">
             <Label htmlFor="form-date">Date</Label>
             <Input
               id="form-date"
               type="date"
               value={formDate}
               onChange={(e) => onFormDateChange(e.target.value)}
+              onBlur={() => touch("date")}
+              className={cn(touched.date && errors.date && "border-destructive focus-visible:ring-destructive")}
             />
+            {touched.date && errors.date && (
+              <p className="text-xs text-destructive">{errors.date}</p>
+            )}
           </div>
-          <div className="space-y-2">
+
+          {/* Type */}
+          <div className="space-y-1.5">
             <Label>Type</Label>
             <div className="flex rounded-md border p-1">
               <button
@@ -117,7 +179,9 @@ export function TransactionModal({
               </button>
             </div>
           </div>
-          <div className="space-y-2">
+
+          {/* Payment Method */}
+          <div className="space-y-1.5">
             <Label>Payment Method</Label>
             <Select value={formPaymentMethod} onValueChange={onFormPaymentMethodChange}>
               <SelectTrigger className="w-full">
@@ -130,22 +194,40 @@ export function TransactionModal({
               </SelectContent>
             </Select>
           </div>
-          <div className="space-y-2">
+
+          {/* Category */}
+          <div className="space-y-1.5">
             <Label>Category</Label>
-            <Select value={formCategory} onValueChange={onFormCategoryChange}>
-              <SelectTrigger className="w-full">
+            <Select
+              value={formCategory}
+              onValueChange={(val) => {
+                onFormCategoryChange(val);
+                touch("category");
+              }}
+            >
+              <SelectTrigger
+                className={cn(
+                  "w-full",
+                  touched.category && errors.category && "border-destructive focus-visible:ring-destructive"
+                )}
+              >
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
-                {MOCK_CATEGORIES.map((cat) => (
+                {categories.map((cat) => (
                   <SelectItem key={cat._id} value={cat._id}>
                     {cat.name}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+            {touched.category && errors.category && (
+              <p className="text-xs text-destructive">{errors.category}</p>
+            )}
           </div>
-          <div className="space-y-2">
+
+          {/* Description */}
+          <div className="space-y-1.5">
             <Label htmlFor="form-desc">Description (optional)</Label>
             <Textarea
               id="form-desc"
@@ -160,8 +242,8 @@ export function TransactionModal({
           <Button variant="outline" onClick={onCancel}>
             Cancel
           </Button>
-          <Button onClick={onSave} disabled={!isFormValid}>
-            {isEditing ? "Save Changes" : "Save Transaction"}
+          <Button onClick={handleSave} disabled={isSaving || !isFormValid}>
+            {isSaving ? "Saving..." : isEditing ? "Save Changes" : "Save Transaction"}
           </Button>
         </DialogFooter>
       </DialogContent>
