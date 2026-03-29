@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { MOCK_TRANSACTIONS, MOCK_CATEGORIES } from "./data/mock-transactions";
+import { useState, useEffect, useCallback } from "react";
+import { transactionsAPI } from "@/lib/api/transactions";
+import { categoriesAPI } from "@/lib/api/categories";
 import { TransactionsPageHeader } from "./components/TransactionsPageHeader";
 import { SummaryCards } from "./components/SummaryCards";
 import { TransactionFilters } from "./components/TransactionFilters";
@@ -11,7 +12,12 @@ import { DeleteTransactionDialog } from "./components/DeleteTransactionDialog";
 import { Card } from "@/components/ui/card";
 
 export default function TransactionsPage() {
-  const [transactions, setTransactions] = useState(MOCK_TRANSACTIONS);
+  const [transactions, setTransactions] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
@@ -30,6 +36,42 @@ export default function TransactionsPage() {
   const [formPaymentMethod, setFormPaymentMethod] = useState("cash");
   const [formCategory, setFormCategory] = useState("");
   const [formDescription, setFormDescription] = useState("");
+
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const data = await categoriesAPI.getAll();
+        setCategories(data.categories);
+      } catch (err) {
+        console.error("Failed to load categories:", err);
+      }
+    }
+    fetchCategories();
+  }, []);
+
+  const fetchTransactions = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const params = {};
+      if (search) params.search = search;
+      if (typeFilter !== "all") params.type = typeFilter;
+      if (paymentFilter !== "all") params.payment = paymentFilter;
+      if (dateFrom) params.dateFrom = dateFrom;
+      if (dateTo) params.dateTo = dateTo;
+
+      const data = await transactionsAPI.getAll(params);
+      setTransactions(data.transactions);
+    } catch (err) {
+      setError(err.message || "Failed to load transactions");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [search, typeFilter, paymentFilter, dateFrom, dateTo]);
+
+  useEffect(() => {
+    fetchTransactions();
+  }, [fetchTransactions]);
 
   const resetFilters = () => {
     setSearch("");
@@ -53,7 +95,7 @@ export default function TransactionsPage() {
   const openAddModal = () => {
     resetForm();
     setFormDate(new Date().toISOString().split("T")[0]);
-    setFormCategory(MOCK_CATEGORIES[0]?._id ?? "");
+    setFormCategory(categories[0]?._id ?? "");
     setIsModalOpen(true);
   };
 
@@ -69,53 +111,50 @@ export default function TransactionsPage() {
     setIsModalOpen(true);
   };
 
-  const handleSaveTransaction = () => {
+  const handleSaveTransaction = async () => {
     if (!formName.trim() || !formAmount || !formDate || !formCategory) return;
-
     const amount = parseFloat(formAmount);
     if (isNaN(amount) || amount < 0) return;
 
-    const category = MOCK_CATEGORIES.find((c) => c._id === formCategory);
-    const payload = {
-      name: formName.trim(),
-      amount,
-      date: formDate,
-      type: formType,
-      paymentMethod: formPaymentMethod,
-      category: category ?? MOCK_CATEGORIES[0],
-      description: formDescription.trim(),
-    };
+    setIsSaving(true);
+    try {
+      const payload = {
+        name: formName.trim(),
+        amount,
+        date: formDate,
+        type: formType,
+        paymentMethod: formPaymentMethod,
+        category: formCategory,
+        description: formDescription.trim(),
+      };
 
-    if (editingTransaction) {
-      setTransactions((prev) =>
-        prev.map((t) =>
-          t._id === editingTransaction._id
-            ? { ...t, ...payload, updatedAt: new Date().toISOString() }
-            : t
-        )
-      );
-    } else {
-      setTransactions((prev) => [
-        ...prev,
-        {
-          ...payload,
-          _id: `tx-${Date.now()}`,
-          user: "user-1",
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-      ]);
+      if (editingTransaction) {
+        await transactionsAPI.update(editingTransaction._id, payload);
+      } else {
+        await transactionsAPI.create(payload);
+      }
+      setIsModalOpen(false);
+      resetForm();
+      await fetchTransactions();
+    } catch (err) {
+      setError(err.message || "Failed to save transaction");
+    } finally {
+      setIsSaving(false);
     }
-    setIsModalOpen(false);
-    resetForm();
   };
 
-  const handleDeleteTransaction = () => {
+  const handleDeleteTransaction = async () => {
     if (!deleteTransaction) return;
-    setTransactions((prev) =>
-      prev.filter((t) => t._id !== deleteTransaction._id)
-    );
-    setDeleteTransaction(null);
+    setIsDeleting(true);
+    try {
+      await transactionsAPI.delete(deleteTransaction._id);
+      setDeleteTransaction(null);
+      await fetchTransactions();
+    } catch (err) {
+      setError(err.message || "Failed to delete transaction");
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const handleModalCancel = () => {
@@ -123,40 +162,14 @@ export default function TransactionsPage() {
     resetForm();
   };
 
-  const isFormValid =
-    formName.trim() !== "" &&
-    formAmount !== "" &&
-    parseFloat(formAmount) >= 0 &&
-    formDate !== "" &&
-    formCategory !== "";
-
-  const filteredTransactions = transactions.filter((tx) => {
-    const matchesSearch =
-      !search || tx.name.toLowerCase().includes(search.toLowerCase());
-    const matchesType = typeFilter === "all" || tx.type === typeFilter;
-    const matchesPayment =
-      paymentFilter === "all" || tx.paymentMethod === paymentFilter;
-    const txDate = tx.date?.split?.("T")?.[0] ?? tx.date ?? "";
-    const matchesDateFrom = !dateFrom || txDate >= dateFrom;
-    const matchesDateTo = !dateTo || txDate <= dateTo;
-
-    return (
-      matchesSearch &&
-      matchesType &&
-      matchesPayment &&
-      matchesDateFrom &&
-      matchesDateTo
-    );
-  });
-
-  const totalIncome = filteredTransactions
+  const totalIncome = transactions
     .filter((t) => t.type === "income")
     .reduce((sum, t) => sum + t.amount, 0);
-  const totalExpenses = filteredTransactions
+  const totalExpenses = transactions
     .filter((t) => t.type === "expense")
     .reduce((sum, t) => sum + t.amount, 0);
   const netBalance = totalIncome - totalExpenses;
-  const totalCount = filteredTransactions.length;
+  const totalCount = transactions.length;
 
   return (
     <div className="space-y-6">
@@ -183,12 +196,24 @@ export default function TransactionsPage() {
         onReset={resetFilters}
       />
 
+      {error && (
+        <div className="rounded-md border border-destructive/50 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          {error}
+        </div>
+      )}
+
       <Card>
-        <TransactionsTable
-          transactions={filteredTransactions}
-          onEdit={openEditModal}
-          onDelete={setDeleteTransaction}
-        />
+        {isLoading ? (
+          <div className="flex h-48 items-center justify-center text-muted-foreground text-sm">
+            Loading transactions...
+          </div>
+        ) : (
+          <TransactionsTable
+            transactions={transactions}
+            onEdit={openEditModal}
+            onDelete={setDeleteTransaction}
+          />
+        )}
       </Card>
 
       <TransactionModal
@@ -211,7 +236,8 @@ export default function TransactionsPage() {
         onFormDescriptionChange={setFormDescription}
         onSave={handleSaveTransaction}
         onCancel={handleModalCancel}
-        isFormValid={isFormValid}
+        isSaving={isSaving}
+        categories={categories}
       />
 
       <DeleteTransactionDialog
@@ -219,6 +245,7 @@ export default function TransactionsPage() {
         open={!!deleteTransaction}
         onOpenChange={(open) => !open && setDeleteTransaction(null)}
         onConfirm={handleDeleteTransaction}
+        isDeleting={isDeleting}
       />
     </div>
   );

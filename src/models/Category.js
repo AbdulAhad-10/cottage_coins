@@ -12,6 +12,16 @@ const categorySchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
+    color: {
+      type: String,
+      trim: true,
+      default: "#64748b",
+    },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: [true, "User is required"],
+    },
   },
   {
     timestamps: true,

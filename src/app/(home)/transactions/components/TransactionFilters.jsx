@@ -81,6 +81,7 @@ export function TransactionFilters({
                 id="date-to"
                 type="date"
                 value={dateTo}
+                min={dateFrom || undefined}
                 onChange={(e) => onDateToChange(e.target.value)}
                 className="w-full sm:w-auto"
               />
