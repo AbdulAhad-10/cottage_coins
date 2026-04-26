@@ -7,12 +7,12 @@ function escapeCsvField(value) {
 }
 
 function formatMoney(n) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
+  const value = Number(n ?? 0);
+  const formatted = new Intl.NumberFormat("en-PK", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(n ?? 0);
+  }).format(value);
+  return `Rs ${formatted}`;
 }
 
 /**
@@ -113,16 +113,16 @@ export function downloadReportCsv(report) {
   const lines = [];
   lines.push("Cottage Coins — Financial Report");
   lines.push("");
-  lines.push(`Total Income,${report.totalIncome}`);
-  lines.push(`Total Expenses,${report.totalExpenses}`);
-  lines.push(`Net Balance,${report.netBalance}`);
+  lines.push(`Total Income,${formatMoney(report.totalIncome)}`);
+  lines.push(`Total Expenses,${formatMoney(report.totalExpenses)}`);
+  lines.push(`Net Balance,${formatMoney(report.netBalance)}`);
   lines.push(`Transaction Count,${report.transactionCount}`);
   lines.push("");
   lines.push("Trend");
   lines.push("Period,Income,Expense");
   for (const row of report.monthlyTrend || []) {
     lines.push(
-      [escapeCsvField(row.month), row.income, row.expense].join(",")
+      [escapeCsvField(row.month), escapeCsvField(formatMoney(row.income)), escapeCsvField(formatMoney(row.expense))].join(",")
     );
   }
   lines.push("");
@@ -130,7 +130,7 @@ export function downloadReportCsv(report) {
   lines.push("Name,Color,Amount,Type");
   for (const row of report.categoryBreakdown || []) {
     lines.push(
-      [escapeCsvField(row.name), escapeCsvField(row.color), row.totalAmount, row.type].join(",")
+      [escapeCsvField(row.name), escapeCsvField(row.color), escapeCsvField(formatMoney(row.totalAmount)), row.type].join(",")
     );
   }
 
