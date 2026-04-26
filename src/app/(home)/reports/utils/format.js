@@ -1,8 +1,8 @@
 export function formatCurrency(amount) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
+  const value = Number(amount ?? 0);
+  const formatted = new Intl.NumberFormat("en-PK", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
-  }).format(amount ?? 0);
+  }).format(value);
+  return `Rs ${formatted}`;
 }
