@@ -3,8 +3,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "../ui/button";
-import { User, Settings as SettingsIcon, LogOut as LogOutIcon } from "lucide-react";
-import Link from "next/link";
+import { User, LogOut as LogOutIcon } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { authAPI } from "@/lib/api/auth";
 
@@ -17,7 +16,6 @@ const titles = new Map([
   ["/inventory-insights", "AI Inventory Insights"],
   ["/email-reports", "Email Reports"],
   ["/history", "History"],
-  ["/settings", "Settings"],
 ]);
 
 export function DashboardHeader() {
@@ -55,12 +53,6 @@ function AccountDropdownMenu() {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <Link href="/settings">
-            <DropdownMenuItem className="cursor-pointer">
-              <SettingsIcon className="mr-2 size-4" />
-              Settings
-            </DropdownMenuItem>
-          </Link>
           <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
             <LogOutIcon className="mr-2 size-4" />
             Logout
