@@ -3,9 +3,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "../ui/button";
-import { User, Settings as SettingsIcon, LogOut as LogOutIcon } from "lucide-react";
-import Link from "next/link";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { LogOut as LogOutIcon } from "lucide-react";
 import { authAPI } from "@/lib/api/auth";
 
 const titles = new Map([
@@ -17,7 +15,6 @@ const titles = new Map([
   ["/inventory-insights", "AI Inventory Insights"],
   ["/email-reports", "Email Reports"],
   ["/history", "History"],
-  ["/settings", "Settings"],
 ]);
 
 export function DashboardHeader() {
@@ -30,12 +27,12 @@ export function DashboardHeader() {
       <div className="flex items-center gap-2">
         <h1 className="text-lg font-semibold">{title}</h1>
       </div>
-      <AccountDropdownMenu />
+      <LogoutButton />
     </header>
   );
 }
 
-function AccountDropdownMenu() {
+function LogoutButton() {
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -45,32 +42,12 @@ function AccountDropdownMenu() {
 
   return (
     <div className="ml-auto">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm">
-            <User className="mr-2 size-4" />
-            Account
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Account</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <Link href="/settings">
-            <DropdownMenuItem className="cursor-pointer">
-              <SettingsIcon className="mr-2 size-4" />
-              Settings
-            </DropdownMenuItem>
-          </Link>
-          <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
-            <LogOutIcon className="mr-2 size-4" />
-            Logout
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <Button type="button" variant="outline" size="sm" onClick={handleLogout}>
+        <LogOutIcon className="mr-2 size-4" />
+        Log out
+      </Button>
     </div>
   );
 }
 
 export default DashboardHeader;
-
-
