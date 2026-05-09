@@ -11,6 +11,31 @@ export function DashboardWelcomeBanner({ userName }) {
 
   return (
     <div className="relative overflow-hidden rounded-xl border border-border bg-gradient-to-br from-amber-50/90 via-orange-50/60 to-rose-50/80 p-6 shadow-sm dark:from-amber-950/40 dark:via-orange-950/30 dark:to-rose-950/30">
+      <svg
+        className="pointer-events-none absolute inset-0 z-1 h-full w-full text-foreground"
+        aria-hidden
+      >
+        <defs>
+          <pattern
+            id="dashWelcomeGrain"
+            width="12"
+            height="12"
+            patternUnits="userSpaceOnUse"
+            patternTransform="rotate(-12)"
+          >
+            <line
+              x1="0"
+              y1="0"
+              x2="0"
+              y2="12"
+              stroke="currentColor"
+              strokeWidth="0.75"
+              strokeOpacity="0.045"
+            />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#dashWelcomeGrain)" />
+      </svg>
       <div className="relative z-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">

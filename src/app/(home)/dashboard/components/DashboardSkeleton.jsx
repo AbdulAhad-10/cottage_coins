@@ -14,12 +14,15 @@ export function DashboardSkeleton() {
       </div>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <Card key={i}>
-            <CardHeader>
-              <Skeleton className="h-4 w-32" />
+          <Card key={i} className="relative overflow-hidden">
+            <CardHeader className="relative z-1 pb-2">
+              <div className="flex items-start justify-between gap-2">
+                <Skeleton className="h-4 w-[min(100%,11rem)]" />
+                <Skeleton className="size-8 shrink-0 rounded-md" />
+              </div>
             </CardHeader>
-            <CardContent>
-              <Skeleton className="h-8 w-24" />
+            <CardContent className="relative z-1">
+              <Skeleton className="h-8 w-28" />
             </CardContent>
           </Card>
         ))}

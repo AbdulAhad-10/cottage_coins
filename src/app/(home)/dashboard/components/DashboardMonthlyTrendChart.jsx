@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   ResponsiveContainer,
   BarChart,
@@ -10,7 +11,9 @@ import {
   Legend,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { formatCurrency } from "../utils/format";
+import { DashboardEmptyChartIllustration } from "./DashboardEmptyChartIllustration";
 
 export function DashboardMonthlyTrendChart({ monthlyTrend }) {
   const data = monthlyTrend ?? [];
@@ -23,8 +26,17 @@ export function DashboardMonthlyTrendChart({ monthlyTrend }) {
       </CardHeader>
       <CardContent>
         {!hasData ? (
-          <div className="flex h-[260px] items-center justify-center text-sm text-muted-foreground">
-            No income or expense data for the last 6 months.
+          <div className="flex min-h-[260px] flex-col items-center justify-center gap-4 px-4 py-8 text-center sm:flex-row sm:gap-8 sm:py-10">
+            <DashboardEmptyChartIllustration className="h-28 w-40 shrink-0 text-muted-foreground sm:h-32 sm:w-44" />
+            <div className="max-w-sm space-y-2">
+              <p className="text-sm font-medium text-foreground">No trend data yet</p>
+              <p className="text-sm text-muted-foreground">
+                Add income and expense transactions to see your last six months on this chart.
+              </p>
+              <Button variant="outline" size="sm" className="mt-2" asChild>
+                <Link href="/transactions">Go to transactions</Link>
+              </Button>
+            </div>
           </div>
         ) : (
           <div className="h-[300px] w-full min-w-0">
