@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatCurrency, formatDateShort } from "../utils/format";
+import { DashboardEmptyIllustration } from "./DashboardEmptyIllustration";
 
 export function DashboardRecentTransactions({ transactions }) {
   const rows = transactions ?? [];
@@ -16,7 +17,21 @@ export function DashboardRecentTransactions({ transactions }) {
       </CardHeader>
       <CardContent className="space-y-3">
         {!rows.length ? (
-          <p className="text-sm text-muted-foreground">No transactions yet.</p>
+          <div className="flex flex-col items-center gap-4 py-6 text-center sm:flex-row sm:justify-center sm:gap-6 sm:py-8">
+            <DashboardEmptyIllustration
+              variant="list"
+              className="h-24 w-32 shrink-0 text-muted-foreground sm:h-28 sm:w-36"
+            />
+            <div className="max-w-xs space-y-2">
+              <p className="text-sm font-medium text-foreground">No transactions yet</p>
+              <p className="text-sm text-muted-foreground">
+                Your latest activity will show up here once you add a transaction.
+              </p>
+              <Button variant="outline" size="sm" className="mt-1" asChild>
+                <Link href="/transactions">Add a transaction</Link>
+              </Button>
+            </div>
+          </div>
         ) : (
           rows.map((tx) => (
             <div

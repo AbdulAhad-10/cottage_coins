@@ -5,6 +5,7 @@ import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "../utils/format";
+import { DashboardEmptyIllustration } from "./DashboardEmptyIllustration";
 
 export function DashboardTopCategoriesDonut({ topCategories }) {
   const rows = (topCategories ?? []).filter((r) => (r.amount ?? 0) > 0);
@@ -24,7 +25,21 @@ export function DashboardTopCategoriesDonut({ topCategories }) {
       </CardHeader>
       <CardContent className="space-y-4">
         {!pieData.length ? (
-          <p className="text-sm text-muted-foreground">No expense categories this month.</p>
+          <div className="flex flex-col items-center gap-4 py-6 text-center sm:flex-row sm:justify-center sm:gap-6 sm:py-8">
+            <DashboardEmptyIllustration
+              variant="pie"
+              className="h-24 w-32 shrink-0 text-muted-foreground sm:h-28 sm:w-36"
+            />
+            <div className="max-w-xs space-y-2">
+              <p className="text-sm font-medium text-foreground">No spending breakdown</p>
+              <p className="text-sm text-muted-foreground">
+                Record expenses with categories this month to see your top categories here.
+              </p>
+              <Button variant="outline" size="sm" className="mt-1" asChild>
+                <Link href="/transactions">Go to transactions</Link>
+              </Button>
+            </div>
+          </div>
         ) : (
           <>
             <div className="mx-auto h-[200px] w-full max-w-[240px]">
