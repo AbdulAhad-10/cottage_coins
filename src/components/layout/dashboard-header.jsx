@@ -21,7 +21,7 @@ export function DashboardHeader() {
   const pathname = usePathname();
   const title = titles.get(pathname) || "Dashboard";
   return (
-    <header className="flex items-center h-16 gap-2 px-4 border-b shrink-0">
+    <header className="flex h-16 shrink-0 items-center gap-2 border-b border-border bg-card/85 px-4 shadow-sm shadow-primary/5 backdrop-blur-md supports-[backdrop-filter]:bg-card/75">
       <SidebarTrigger className="-ml-1" />
       <Separator orientation="vertical" className="h-4 mr-2" />
       <div className="flex items-center gap-2">
