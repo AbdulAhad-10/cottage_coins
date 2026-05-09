@@ -10,7 +10,6 @@ import {
   Mail,
   History,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import {
   Sidebar,
   SidebarContent,
@@ -22,17 +21,14 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-  SidebarSeparator,
 } from "@/components/ui/sidebar";
 
 const nav = [
   { title: "Dashboard", url: "/dashboard", icon: BarChart3 },
-  { separator: true },
   { title: "Categories", url: "/categories", icon: FolderTree },
   { title: "Transactions", url: "/transactions", icon: Wallet },
   { title: "Reports", url: "/reports", icon: FilePieChart },
   { title: "AI Forecast", url: "/forecast", icon: Brain },
-  { separator: true },
   { title: "Email Reports", url: "/email-reports", icon: Mail },
   { title: "History", url: "/history", icon: History },
 ];
@@ -46,8 +42,8 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link href="/dashboard">
-                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex size-8 items-center justify-center rounded-lg aspect-square">
-                  <BarChart3 color="#FAFAFA" className="size-4" />
+                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex size-8 items-center justify-center rounded-lg aspect-square shadow-sm shadow-sidebar-primary/30">
+                  <BarChart3 className="size-4" strokeWidth={2.25} />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="font-semibold">Cottage Coins</span>
@@ -63,20 +59,16 @@ export function AppSidebar() {
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {nav.map((item, idx) =>
-                item.separator ? (
-                  <SidebarSeparator key={`sep-${idx}`} />
-                ) : (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={pathname === item.url}>
-                      <Link href={item.url}>
-                        <item.icon className="size-4" />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ),
-              )}
+              {nav.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild isActive={pathname === item.url}>
+                    <Link href={item.url}>
+                      <item.icon className="size-4" />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
