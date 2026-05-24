@@ -7,7 +7,7 @@ export function ReportsPageHeader({ onExportPdf, onExportCsv, isPdfExporting }) 
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Reports</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-primary">Reports</h1>
         <p className="text-muted-foreground">Analyze your financial performance</p>
       </div>
       <div className="flex flex-wrap gap-2">

@@ -41,7 +41,7 @@ export function TimelineFeed({ groupedTransactions, selectedDate }) {
                   <button
                     type="button"
                     onClick={() => toggleMonth(group.month)}
-                    className="w-full px-4 py-3 text-left flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between hover:bg-muted/40"
+                    className="w-full px-4 py-3 text-left flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between bg-linear-to-r from-muted/60 to-transparent hover:from-muted/80 transition-colors"
                   >
                     <div>
                       <p className="font-medium">{group.month}</p>

@@ -7,7 +7,7 @@ export function TransactionsPageHeader({ onAddTransaction }) {
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Transactions</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-primary">Transactions</h1>
         <p className="text-muted-foreground">Manage your income and expenses</p>
       </div>
       <div className="flex gap-2">
