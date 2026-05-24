@@ -61,8 +61,8 @@ export function DashboardMonthlyTrendChart({ monthlyTrend }) {
                   }}
                 />
                 <Legend />
-                <Bar dataKey="income" name="Income" fill="#16a34a" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="expense" name="Expense" fill="#dc2626" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="income" name="Income" fill="#059669" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="expense" name="Expense" fill="#f43f5e" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

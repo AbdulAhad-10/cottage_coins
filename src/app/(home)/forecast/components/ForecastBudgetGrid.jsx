@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { formatCurrency } from "../utils/format";
 
 export function ForecastBudgetGrid({ budgetRecommendations }) {
@@ -18,12 +17,13 @@ export function ForecastBudgetGrid({ budgetRecommendations }) {
             const pct =
               suggested > 0 ? Math.min(100, Math.round((current / suggested) * 100)) : 0;
             return (
-              <Card key={row.category}>
+              <Card key={row.category} className="overflow-hidden">
+                <div className="h-1 w-full" style={{ backgroundColor: row.color || "#6366f1" }} />
                 <CardHeader className="pb-2">
                   <CardTitle className="flex items-center gap-2 text-base">
                     <span
-                      className="size-2.5 shrink-0 rounded-full"
-                      style={{ backgroundColor: row.color || "#64748b" }}
+                      className="size-3 shrink-0 rounded-full ring-2 ring-white dark:ring-card"
+                      style={{ backgroundColor: row.color || "#6366f1" }}
                     />
                     {row.category}
                   </CardTitle>
@@ -31,18 +31,26 @@ export function ForecastBudgetGrid({ budgetRecommendations }) {
                 <CardContent className="space-y-3">
                   <div className="flex justify-between gap-2 text-sm">
                     <span className="text-muted-foreground">Current avg / mo</span>
-                    <span className="font-medium tabular-nums">{formatCurrency(current)}</span>
+                    <span className="font-semibold tabular-nums">{formatCurrency(current)}</span>
                   </div>
                   <div className="flex justify-between gap-2 text-sm">
                     <span className="text-muted-foreground">Suggested budget</span>
-                    <span className="font-medium tabular-nums">{formatCurrency(suggested)}</span>
+                    <span className="font-semibold tabular-nums text-primary">{formatCurrency(suggested)}</span>
                   </div>
                   <div className="space-y-1">
                     <div className="flex justify-between text-xs text-muted-foreground">
                       <span>Usage vs suggested</span>
-                      <span>{pct}%</span>
+                      <span className={pct >= 100 ? "text-rose-600 font-medium" : pct >= 80 ? "text-amber-600 font-medium" : "text-emerald-600 font-medium"}>{pct}%</span>
                     </div>
-                    <Progress value={pct} className="h-2" />
+                    <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all"
+                        style={{
+                          width: `${Math.min(pct, 100)}%`,
+                          backgroundColor: pct >= 100 ? "#f43f5e" : pct >= 80 ? "#f59e0b" : (row.color || "#6366f1"),
+                        }}
+                      />
+                    </div>
                   </div>
                   <p className="text-xs leading-relaxed text-muted-foreground">{row.reason}</p>
                 </CardContent>

@@ -1,5 +1,3 @@
-import { Sparkles, Leaf, Flame } from "lucide-react";
-
 export function DashboardWelcomeBanner({ userName }) {
   const displayName = userName?.trim() || "there";
   const today = new Date().toLocaleDateString("en-US", {
@@ -46,14 +44,12 @@ export function DashboardWelcomeBanner({ userName }) {
             Here&apos;s your financial snapshot
           </p>
         </div>
-        <div
-          className="flex shrink-0 items-center justify-center gap-3 rounded-lg border border-amber-200/60 bg-white/60 px-5 py-4 dark:border-amber-800/50 dark:bg-black/20"
+        <img
+          src="/illustration 2.svg"
+          alt=""
           aria-hidden
-        >
-          <Sparkles className="size-8 text-amber-600 dark:text-amber-400" />
-          <Leaf className="size-7 text-emerald-600 dark:text-emerald-400" />
-          <Flame className="size-8 text-orange-600 dark:text-orange-400" />
-        </div>
+          className="h-24 w-auto shrink-0 object-contain drop-shadow-sm"
+        />
       </div>
       <div className="pointer-events-none absolute -right-8 -top-8 size-32 rounded-full bg-amber-200/30 blur-2xl dark:bg-amber-500/10" />
       <div className="pointer-events-none absolute -bottom-6 left-1/3 size-24 rounded-full bg-rose-200/25 blur-2xl dark:bg-rose-500/10" />

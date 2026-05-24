@@ -63,7 +63,7 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild isActive={pathname === item.url}>
                     <Link href={item.url}>
-                      <item.icon className="size-4" />
+                      <item.icon className={`size-4 ${pathname === item.url ? "text-primary" : ""}`} />
                       <span>{item.title}</span>
                     </Link>
                   </SidebarMenuButton>

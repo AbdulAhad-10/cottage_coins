@@ -13,7 +13,7 @@ export function ForecastPageHeader({
     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
       <div>
         <div className="flex flex-wrap items-center gap-2">
-          <h1 className="text-2xl font-semibold tracking-tight">AI Forecast</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-primary">AI Forecast</h1>
           <Badge variant="secondary" className="gap-1 font-normal">
             <Sparkles className="size-3.5" />
             Insights

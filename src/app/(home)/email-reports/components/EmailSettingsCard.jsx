@@ -1,3 +1,4 @@
+import { Settings } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -16,9 +17,14 @@ export function EmailSettingsCard({
   isSaving,
 }) {
   return (
-    <Card>
+    <Card className="bg-linear-to-br from-violet-50 to-indigo-50 dark:from-violet-950/30 dark:to-indigo-950/20 border-violet-200/80 dark:border-violet-900/50">
       <CardHeader>
-        <CardTitle className="text-base">Settings</CardTitle>
+        <CardTitle className="text-base flex items-center gap-2">
+          <div className="rounded-lg bg-violet-100 dark:bg-violet-900/50 p-1.5">
+            <Settings className="size-4 text-violet-600 dark:text-violet-400" />
+          </div>
+          Settings
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-5">
         <div className="space-y-1.5">

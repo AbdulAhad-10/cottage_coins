@@ -86,6 +86,13 @@ export default function DashboardPage() {
             <DashboardRecentTransactions transactions={data.recentTransactions} />
             <DashboardTopCategoriesDonut topCategories={data.topCategories} />
           </div>
+          <div className="overflow-hidden rounded-xl border border-border shadow-sm">
+            <img
+              src="/banner.jpg"
+              alt="Cottage Coins"
+              className="w-full h-48 object-cover object-center"
+            />
+          </div>
           <DashboardQuickActions />
         </>
       )}

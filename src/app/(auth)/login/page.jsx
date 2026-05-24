@@ -67,55 +67,23 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex">
-      {/* Left Side - Branding */}
+      {/* Left Side - Illustration */}
       <div className="hidden lg:flex lg:w-1/2 bg-sidebar p-12 flex-col justify-center items-center text-sidebar-foreground">
-        <div className="max-w-md space-y-6">
-          <div className="flex items-center gap-3">
+        <div className="max-w-md w-full space-y-8 text-center">
+          <div className="flex items-center justify-center gap-3">
             <div className="bg-sidebar-primary p-3 rounded-xl">
               <BarChart3 className="w-10 h-10 text-sidebar-primary-foreground" />
             </div>
             <h1 className="text-4xl font-bold">Cottage Coins</h1>
           </div>
-
-          <p className="text-xl text-muted-foreground">
+          <p className="text-lg text-muted-foreground">
             Your personal finance companion for smarter money management
           </p>
-
-          <div className="space-y-4 pt-8">
-            <div className="flex items-start gap-3">
-              <div className="bg-sidebar-accent rounded-full p-2 mt-1">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <div>
-                <h3 className="font-semibold text-lg">Track Every Transaction</h3>
-                <p className="text-muted-foreground">Keep tabs on all your income and expenses in one place</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="bg-sidebar-accent rounded-full p-2 mt-1">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <div>
-                <h3 className="font-semibold text-lg">Smart Categories</h3>
-                <p className="text-muted-foreground">Organize spending with intelligent categorization</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="bg-sidebar-accent rounded-full p-2 mt-1">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <div>
-                <h3 className="font-semibold text-lg">AI-Powered Insights</h3>
-                <p className="text-muted-foreground">Get forecasts and recommendations for better financial decisions</p>
-              </div>
-            </div>
-          </div>
+          <img
+            src="/illustration1.svg"
+            alt="Finance illustration"
+            className="w-full max-w-sm mx-auto"
+          />
         </div>
       </div>
 
