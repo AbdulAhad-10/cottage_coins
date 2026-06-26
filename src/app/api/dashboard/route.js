@@ -19,23 +19,19 @@ async function getAuthenticatedUserId() {
 }
 
 function startOfMonth(d) {
-  const x = new Date(d.getFullYear(), d.getMonth(), 1);
-  x.setHours(0, 0, 0, 0);
-  return x;
+  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1));
 }
 
 function endOfMonth(d) {
-  const x = new Date(d.getFullYear(), d.getMonth() + 1, 0);
-  x.setHours(23, 59, 59, 999);
-  return x;
+  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0, 23, 59, 59, 999));
 }
 
 function formatMonthLabel(date) {
-  return new Date(date).toLocaleDateString("en-US", { month: "short", year: "numeric" });
+  return new Date(date).toLocaleDateString("en-US", { month: "short", year: "numeric", timeZone: "UTC" });
 }
 
 function monthStartAtOffset(now, monthsBackFromCurrent) {
-  return startOfMonth(new Date(now.getFullYear(), now.getMonth() - monthsBackFromCurrent, 1));
+  return startOfMonth(new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - monthsBackFromCurrent, 1)));
 }
 
 export async function GET() {
