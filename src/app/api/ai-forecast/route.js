@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 import mongoose from "mongoose";
 import connectDB from "@/lib/db";
 import Category from "@/models/Category";
@@ -10,7 +10,8 @@ import Transaction from "@/models/Transaction";
 void Category;
 
 const JWT_SECRET = process.env.JWT_SECRET;
-const GEMINI_MODEL = "gemini-flash-latest";
+const GITHUB_MODELS_ENDPOINT = "https://models.github.ai/inference";
+const GITHUB_MODELS_MODEL = "openai/gpt-4o";
 
 async function getAuthenticatedUserId() {
   const cookieStore = await cookies();
@@ -176,12 +177,12 @@ export async function POST() {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey || !String(apiKey).trim()) {
+    const githubToken = process.env.GITHUB_TOKEN;
+    if (!githubToken || !String(githubToken).trim()) {
       return NextResponse.json(
         {
           error:
-            "AI forecast is not configured. Set GEMINI_API_KEY on the server.",
+            "AI forecast is not configured. Set GITHUB_TOKEN on the server.",
         },
         { status: 503 },
       );
@@ -289,14 +290,29 @@ export async function POST() {
       categorySpending,
     };
 
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
+    const client = new OpenAI({
+      baseURL: GITHUB_MODELS_ENDPOINT,
+      apiKey: githubToken,
+    });
     const prompt = buildPrompt(summary);
 
     let text;
     try {
-      const result = await model.generateContent(prompt);
-      text = result.response.text();
+      const result = await client.chat.completions.create({
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are a financial analyst for a personal finance app. Respond with JSON only.",
+          },
+          { role: "user", content: prompt },
+        ],
+        temperature: 1.0,
+        top_p: 1.0,
+        max_tokens: 1000,
+        model: GITHUB_MODELS_MODEL,
+      });
+      text = result.choices[0].message.content;
     } catch (err) {
       console.error("AI forecast generateContent error:", err);
       return NextResponse.json(
