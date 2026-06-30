@@ -32,6 +32,7 @@ export default function TransactionsPage() {
   const [formName, setFormName] = useState("");
   const [formAmount, setFormAmount] = useState("");
   const [formDate, setFormDate] = useState("");
+  const [formTime, setFormTime] = useState("");
   const [formType, setFormType] = useState("expense");
   const [formPaymentMethod, setFormPaymentMethod] = useState("cash");
   const [formCategory, setFormCategory] = useState("");
@@ -85,6 +86,7 @@ export default function TransactionsPage() {
     setFormName("");
     setFormAmount("");
     setFormDate("");
+    setFormTime("");
     setFormType("expense");
     setFormPaymentMethod("cash");
     setFormCategory("");
@@ -103,7 +105,10 @@ export default function TransactionsPage() {
     setEditingTransaction(tx);
     setFormName(tx.name);
     setFormAmount(String(tx.amount));
-    setFormDate(tx.date?.split?.("T")?.[0] ?? tx.date);
+    const txDate = new Date(tx.date);
+    const pad = (n) => String(n).padStart(2, "0");
+    setFormDate(`${txDate.getFullYear()}-${pad(txDate.getMonth() + 1)}-${pad(txDate.getDate())}`);
+    setFormTime(`${pad(txDate.getHours())}:${pad(txDate.getMinutes())}`);
     setFormType(tx.type);
     setFormPaymentMethod(tx.paymentMethod);
     setFormCategory(tx.category?._id ?? "");
@@ -112,7 +117,7 @@ export default function TransactionsPage() {
   };
 
   const handleSaveTransaction = async () => {
-    if (!formName.trim() || !formAmount || !formDate || !formCategory) return;
+    if (!formName.trim() || !formAmount || !formDate || !formTime || !formCategory) return;
     const amount = parseFloat(formAmount);
     if (isNaN(amount) || amount < 0) return;
 
@@ -121,7 +126,7 @@ export default function TransactionsPage() {
       const payload = {
         name: formName.trim(),
         amount,
-        date: formDate,
+        date: `${formDate}T${formTime}`,
         type: formType,
         paymentMethod: formPaymentMethod,
         category: formCategory,
@@ -226,6 +231,8 @@ export default function TransactionsPage() {
         onFormAmountChange={setFormAmount}
         formDate={formDate}
         onFormDateChange={setFormDate}
+        formTime={formTime}
+        onFormTimeChange={setFormTime}
         formType={formType}
         onFormTypeChange={setFormType}
         formPaymentMethod={formPaymentMethod}

@@ -15,3 +15,11 @@ export function formatDateShort(value) {
     year: "numeric",
   });
 }
+
+export function formatTimeShort(value) {
+  if (!value) return "";
+  return new Date(value).toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}

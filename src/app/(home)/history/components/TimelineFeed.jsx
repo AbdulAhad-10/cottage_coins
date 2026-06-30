@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatCurrency, formatDateShort, paymentMethodLabel } from "../utils/format";
+import { formatCurrency, formatDateShort, formatTimeShort, paymentMethodLabel } from "../utils/format";
 
 export function TimelineFeed({ groupedTransactions, selectedDate }) {
   const [collapsedMonths, setCollapsedMonths] = useState({});
@@ -79,7 +79,8 @@ export function TimelineFeed({ groupedTransactions, selectedDate }) {
                               <p className="text-sm font-medium truncate">{tx.name}</p>
                             </div>
                             <p className="text-xs text-muted-foreground mt-1">
-                              {formatDateShort(tx.date)} • {paymentMethodLabel(tx.paymentMethod)} •{" "}
+                              {formatDateShort(tx.date)} • {formatTimeShort(tx.date)} •{" "}
+                              {paymentMethodLabel(tx.paymentMethod)} •{" "}
                               {tx.category?.name || "Unknown"}
                             </p>
                           </div>

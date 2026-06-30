@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { formatCurrency, formatDateShort } from "../utils/format";
+import { formatCurrency, formatDateShort, formatTimeShort } from "../utils/format";
 import { DashboardEmptyIllustration } from "./DashboardEmptyIllustration";
 
 export function DashboardRecentTransactions({ transactions }) {
@@ -45,7 +45,9 @@ export function DashboardRecentTransactions({ transactions }) {
                 />
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium">{tx.name}</p>
-                  <p className="text-xs text-muted-foreground">{formatDateShort(tx.date)}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {formatDateShort(tx.date)} &middot; {formatTimeShort(tx.date)}
+                  </p>
                 </div>
               </div>
               <p

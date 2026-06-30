@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { formatDate, formatCurrency } from "../utils";
+import { formatDate, formatTime, formatCurrency } from "../utils";
 import { cn } from "@/lib/utils";
 
 export function TransactionsTable({ transactions, onEdit, onDelete }) {
@@ -25,6 +25,7 @@ export function TransactionsTable({ transactions, onEdit, onDelete }) {
             <TableHead>Name</TableHead>
             <TableHead>Category</TableHead>
             <TableHead>Date</TableHead>
+            <TableHead>Time</TableHead>
             <TableHead>Payment Method</TableHead>
             <TableHead>Type</TableHead>
             <TableHead className="text-right">Amount</TableHead>
@@ -34,7 +35,7 @@ export function TransactionsTable({ transactions, onEdit, onDelete }) {
         <TableBody>
           {transactions.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
+              <TableCell colSpan={8} className="h-24 text-center text-muted-foreground">
                 No transactions match your filters.
               </TableCell>
             </TableRow>
@@ -51,6 +52,7 @@ export function TransactionsTable({ transactions, onEdit, onDelete }) {
                   </Badge>
                 </TableCell>
                 <TableCell>{formatDate(tx.date)}</TableCell>
+                <TableCell>{formatTime(tx.date)}</TableCell>
                 <TableCell className="capitalize">{tx.paymentMethod.replace(" ", " ")}</TableCell>
                 <TableCell>
                   <Badge

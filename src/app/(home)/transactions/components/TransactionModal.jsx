@@ -32,6 +32,8 @@ export function TransactionModal({
   onFormAmountChange,
   formDate,
   onFormDateChange,
+  formTime,
+  onFormTimeChange,
   formType,
   onFormTypeChange,
   formPaymentMethod,
@@ -72,6 +74,7 @@ export function TransactionModal({
         ? "Amount is too large"
         : null,
     date: !formDate ? "Date is required" : null,
+    time: !formTime ? "Time is required" : null,
     category: !formCategory ? "Please select a category" : null,
   };
 
@@ -79,7 +82,7 @@ export function TransactionModal({
 
   const handleSave = () => {
     // Touch all fields to reveal any hidden errors before submitting
-    setTouched({ name: true, amount: true, date: true, category: true });
+    setTouched({ name: true, amount: true, date: true, time: true, category: true });
     if (!isFormValid) return;
     onSave();
   };
@@ -133,20 +136,36 @@ export function TransactionModal({
             )}
           </div>
 
-          {/* Date */}
-          <div className="space-y-1.5">
-            <Label htmlFor="form-date">Date</Label>
-            <Input
-              id="form-date"
-              type="date"
-              value={formDate}
-              onChange={(e) => onFormDateChange(e.target.value)}
-              onBlur={() => touch("date")}
-              className={cn(touched.date && errors.date && "border-destructive focus-visible:ring-destructive")}
-            />
-            {touched.date && errors.date && (
-              <p className="text-xs text-destructive">{errors.date}</p>
-            )}
+          {/* Date & Time */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <Label htmlFor="form-date">Date</Label>
+              <Input
+                id="form-date"
+                type="date"
+                value={formDate}
+                onChange={(e) => onFormDateChange(e.target.value)}
+                onBlur={() => touch("date")}
+                className={cn(touched.date && errors.date && "border-destructive focus-visible:ring-destructive")}
+              />
+              {touched.date && errors.date && (
+                <p className="text-xs text-destructive">{errors.date}</p>
+              )}
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="form-time">Time</Label>
+              <Input
+                id="form-time"
+                type="time"
+                value={formTime}
+                onChange={(e) => onFormTimeChange(e.target.value)}
+                onBlur={() => touch("time")}
+                className={cn(touched.time && errors.time && "border-destructive focus-visible:ring-destructive")}
+              />
+              {touched.time && errors.time && (
+                <p className="text-xs text-destructive">{errors.time}</p>
+              )}
+            </div>
           </div>
 
           {/* Type */}
